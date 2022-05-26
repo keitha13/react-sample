@@ -2,32 +2,30 @@ import React, { Component } from "react";
 
 export default class AppContent extends Component {
 
-  anotherFunction = () => {
-    console.log("this is another function")
+  constructor(props) {
+    super(props);
+    this.handlePostChange = this.handlePostChange.bind(this);
   }
 
-  leftParagraph = () => {
-    console.log("left the paragraph")
+  handlePostChange(posts) {
+    this.posts.handlePostChange(posts);
   }
 
   fetchList = () => {
     fetch('https://jsonplaceholder.typicode.com/posts')
     .then((response) => response.json())
     .then(json => {
-      console.log(json);
-      let posts = document.getElementById("post-list");
-
-      json.forEach(function(obj){
-        let li = document.createElement("li");
-        li.appendChild(document.createTextNode(obj.title));
-        posts.appendChild(li);
-      });
+      this.handlePostChange(json);
     })
+  }
+
+  clickedItem = (x) => {
+    console.log("clicked", x)
   }
 
   render() {
     return (
-      <p>
+      <div>
         This is content.
         <br />
         <hr />
@@ -36,8 +34,19 @@ export default class AppContent extends Component {
         <button onClick={this.fetchList} className="btn btn-primary">fetch data</button>
 
         <hr />
-        <ul id="post-list"></ul>
-      </p>
+
+        <p>posts is {this.props.posts.length} items length</p>
+
+        <ul>
+          {this.props.posts.map((c) => (
+            <li key={c.id}>
+              <a href="#!" onClick={() => this.clickedItem(c.id)}>
+                {c.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     )
   }
 }
